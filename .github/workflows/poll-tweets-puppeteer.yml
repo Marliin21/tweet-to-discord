@@ -17,7 +17,7 @@ jobs:
           node-version: '18'
 
       - name: Install deps (puppeteer will download Chromium)
-        run: npm ci || npm install
+        run: npm install
         working-directory: .
 
       - name: Run puppeteer scraper
