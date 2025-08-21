@@ -1,0 +1,39 @@
+name: Poll X -> Discord (puppeteer)
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch: {}
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps (puppeteer will download Chromium)
+        run: npm ci || npm install
+        working-directory: .
+
+      - name: Run puppeteer scraper
+        env:
+          TWITTER_USER: ${{ secrets.TWITTER_USER }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: node scrape-x-puppeteer.js
+
+      - name: Commit last_id if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git status --porcelain | grep -q 'last_id.txt'; then
+            git add last_id.txt
+            git commit -m "Update last_id by action"
+            git push
+          else
+            echo "No changes"
+          fi
