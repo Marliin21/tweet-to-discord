@@ -1,0 +1,8 @@
+{
+  "name": "scrape-x-puppeteer",
+  "version": "1.0.0",
+  "dependencies": {
+    "puppeteer": "^21.0.0",
+    "node-fetch": "^2.6.12"
+  }
+}
